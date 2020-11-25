@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" type="text/css" href="topbar.css">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<style>
+    #banner {
+        width: 100vw;
+        height:20vh;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        padding-bottom: 10vh;
+    }
+    div.bannerText{
+        padding-top: 10vh;
+        color:white;
+        font-family: 'Source Sans Pro';
+        font-size: 40px;
+        padding-left:5%;
+    }
+    div.mainText{
+        font-family: 'Source Sans Pro';
+        padding-right:15vw;
+        text-align:justify;
+        font-size:20px;
+    }
+    img.info1{
+      min-width:700px;
+      width:70vw;
+      height:40vh;
+    }
+    img.info2{
+        min-width: 300px;
+        width:40vw;
+        height:40vh;
+        padding-left:20%;
+
+    }
+    img.info3{
+        min-width:300px;
+        width:25vw;
+        height:60vh;
+        padding-left:20%;
+
+    }
+    .text{
+        padding-top: 50px;
+    }
+
+    /*card css below*/
+    .card {
+        float: left;
+        width: 30%;
+        padding-top: 10vh;
+    }
+    .card .wrapper {
+        background-color: #fff;
+        min-height: 400px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.2);
+    }
+    .card .wrapper:hover .data {
+        -webkit-transform: translateY(-100px) !important;
+        transform: translateY(-100px) !important;
+    }
+    .card .data {
+        position: absolute;
+        bottom: -70px;
+        width: 100%;
+        -webkit-transform: translateY(calc(70px + 1em));
+        transform: translateY(calc(70px + 1em));
+        -webkit-transition: -webkit-transform 0.3s;
+        transition: -webkit-transform 0.3s;
+        transition: transform 0.5s;
+        transition: transform 0.5s, -webkit-transform 0.5s;
+    }
+    .card .data .content {
+        padding: 1em;
+        position: relative;
+        z-index: 1;
+    }
+    .card .author {
+        font-size: 2.5vw;
+        font-family: "Source Sans Pro";
+    }
+    .card .title {
+        margin-top: 10px;
+    }
+    .card .text {
+        height: 70px;
+        font-size: 1.5vw;
+        margin: 0;
+    }
+    .card input[type='checkbox'] {
+        display: none;
+    }
+    .card input[type='checkbox']:checked + .menu-content {
+        -webkit-transform: translateY(-60px);
+        transform: translateY(-60px);
+    }
+    body{
+        min-height: 450px !important;
+        min-width: 200px !important;
+
+    }
+
+    .example-2{
+        min-height: 450px;
+        min-width: 200px;
+        padding-left: 1vw;
+    }
+    .example-2 .wrapper {
+        background: url(https://ic.pics.livejournal.com/hoteladvisor/40992692/428069/428069_original.jpg) center/cover no-repeat;
+
+    }
+    .example-2 .wrapper:hover .menu-content span {
+        -webkit-transform: translate(-50%, -10px);
+        transform: translate(-50%, -10px);
+        opacity: 1;
+    }
+    .example-2 .data {
+        font-family: "Source Sans Pro";
+        color: #fff;
+        -webkit-transform: translateY(calc(1em + 4em));
+        transform: translateY(calc(1em + 4em));
+        font-size: 2.5vh;
+    }
+    .example-2 .title a {
+        color: #fff;
+        font-family: "Source Sans Pro";
+        font-size: 4vw;
+    }
+    .example-2 .button {
+        font-family: "Source Sans Pro";
+        display: block;
+        width: 100px;
+        margin: 2em auto 1em;
+        text-align: center;
+        font-size: 12px;
+        color: #fff;
+        line-height: 1;
+        position: relative;
+        font-weight: 700;
+    }
+    .example-2 .button::after {
+        content: '\2192';
+        opacity: 0;
+        position: absolute;
+        right: 0;
+        top: 50%;
+        -webkit-transform: translate(0, -50%);
+        transform: translate(0, -50%);
+        -webkit-transition: all 0.3s;
+        transition: all 0.3s;
+    }
+    .example-2 .button:hover::after {
+        -webkit-transform: translate(5px, -50%);
+        transform: translate(5px, -50%);
+        opacity: 1;
+    }
+    /*card 2*/
+
+    #card2{
+        padding: 4vw;
+        padding-top: 10vh;
+    }
+
+    .example-3 .wrapper {
+        background: url(https://img00.deviantart.net/0eb6/i/2008/062/6/3/dark_earth_by_tehboriz.jpg) center/cover no-repeat;
+    }
+    .example-3 .wrapper:hover .menu-content span {
+        -webkit-transform: translate(-50%, -10px);
+        transform: translate(-50%, -10px);
+        opacity: 1;
+    }
+    .example-3 .data {
+        font-family: "Source Sans Pro";
+        color: #fff;
+        -webkit-transform: translateY(calc(1em + 4em));
+        transform: translateY(calc(1em + 4em));
+        font-size: 2.5vh;
+    }
+    .example-3 .title a {
+        color: #fff;
+        font-family: "Source Sans Pro";
+        font-size: 4vw;
+    }
+    .example-3 .button {
+        font-family: "Source Sans Pro";
+        display: block;
+        width: 100px;
+        margin: 2em auto 1em;
+        text-align: center;
+        font-size: 12px;
+        color: #fff;
+        line-height: 1;
+        position: relative;
+        font-weight: 700;
+    }
+    .example-3 .button::after {
+        content: '\2192';
+        opacity: 0;
+        position: absolute;
+        right: 0;
+        top: 50%;
+        -webkit-transform: translate(0, -50%);
+        transform: translate(0, -50%);
+        -webkit-transition: all 0.3s;
+        transition: all 0.3s;
+    }
+    .example-3 .button:hover::after {
+        -webkit-transform: translate(5px, -50%);
+        transform: translate(5px, -50%);
+        opacity: 1;
+    }
+
+    /*card 3*/
+    #card3{
+        padding-top: 10vh;
+    }
+
+    .example-4 .wrapper {
+        background: url(https://img00.deviantart.net/6264/i/2010/175/b/1/a_helping_hand_in_the_dark__by_ptip06.jpg) center/cover no-repeat;
+    }
+    .example-4 .wrapper:hover .menu-content span {
+        -webkit-transform: translate(-50%, -10px);
+        transform: translate(-50%, -10px);
+        opacity: 1;
+    }
+    .example-4 .data {
+        font-family: "Source Sans Pro";
+        color: #fff;
+        -webkit-transform: translateY(calc(1em + 4em));
+        transform: translateY(calc(1em + 4em));
+        font-size: 2.5vh;
+    }
+    .example-4 .title a {
+        color: #fff;
+        font-family: "Source Sans Pro";
+        font-size: 4vw;
+    }
+
+    .example-4 .button {
+        font-family: "Source Sans Pro";
+        display: block;
+        width: 100px;
+        margin: 2em auto 1em;
+        text-align: center;
+        font-size: 12px;
+        color: #fff;
+        line-height: 1;
+        position: relative;
+        font-weight: 700;
+    }
+    .example-4 .button::after {
+        content: '\2192';
+        opacity: 0;
+        position: absolute;
+        right: 0;
+        top: 50%;
+        -webkit-transform: translate(0, -50%);
+        transform: translate(0, -50%);
+        -webkit-transition: all 0.3s;
+        transition: all 0.3s;
+    }
+    .example-4 .button:hover::after {
+        -webkit-transform: translate(5px, -50%);
+        transform: translate(5px, -50%);
+        opacity: 1;
+    }
+
+    html body {
+        margin: 0 0 0 0;
+    }
+</style>
+<head>
+    <meta charset="UTF-8">
+    <title>Impact Page </title>
+</head>
+<ul class="topnav">
+    <button onclick="menu()"><i class="material-icons menu-icon" style="font-size:36px">menu</i></button>
+    <li><a class="active" href="index.html">ReeTech</a></li>
+    <li><a href="maps.html">Where to Recycle</a></li>
+    <li><a href="impactpage.html">Why Recycle</a></li>
+    <li><a href="RequestForm.html">Pickup Service</a></li>
+    <li><a href="deliveryTracker.html">Pickup Progress Tracker</a></li>
+    <li><a href="collectionpartner.html">Collection Partners</a></li>
+</ul>
+<section id="banner"  style="padding: 80px 0px;
+background-image: url('http://backgroundcheckall.com/wp-content/uploads/2017/12/dark-nature-background-10400.jpg'); ">
+<div class = bannerText>
+    <h1>E-Waste</h1>
+</div>
+</section>
+
+<div class="example-2 card">
+    <div class="wrapper">
+        <div class="data">
+            <div class="content">
+                <span class="author">ReeTech</span>
+                <h1 class="title"><a href="whatEwaste.html" style = "text-decoration:none;">What is E-waste?</a></h1>
+                <p class="text">Find out more about e-waste here!</p>
+                <!--<a href="whatEwaste.html" class="button" style = "text-decoration:none;">Read more</a>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="example-3 card" id ="card2">
+    <div class="wrapper">
+        <div class="data">
+            <div class="content">
+                <span class="author">ReeTech</span>
+                <h1 class="title"><a href="sowhat.html" style = "text-decoration:none;">So What?</a></h1>
+                <p class="text">Find out what detrimental impacts improper recycling and handling of e-waste have on us and the environment!</p>
+                <!--<a href="sowhat.html" class="button" style = "text-decoration:none;">Read more</a>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="example-4 card" id ="card3">
+    <div class="wrapper">
+        <div class="data">
+            <div class="content">
+                <span class="author">ReeTech</span>
+                <h1 class="title"><a href="howtohelp.html" style = "text-decoration:none;">Help us</a></h1>
+                <p class="text">Information on how you can help and make a difference even in your daily life.</p>
+                <!--<a href="howtohelp.html" class="button" style = "text-decoration:none;">Read more</a>-->
+            </div>
+        </div>
+    </div>
+</div>
+<script src="topbar.js"></script>
+</body>
+</html>

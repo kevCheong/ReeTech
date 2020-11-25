@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <title>Coming Soon</title>
+    <style type="text/css">
+
+        h1 {
+            text-align: center;
+            color: white;
+            background:transparent;
+            font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+            font-size: 10vmin;
+            font-style: italic;
+            font-variant: normal;
+            font-weight: 900;
+            line-height: 18vh;
+        }
+
+        h2 {
+            font-family: "Helvetica";
+            font-weight: bold;
+            font-size: 3vmin;
+            color: black;
+            line-height: 1.6;
+
+        }
+
+        h3 {
+            font-family: "Helvetica";
+            font-weight: bold;
+            font-size: 4.5vmin;
+            color: black;
+            line-height: 12vh;
+
+        }
+
+        #heading {
+            background-color: "rgba(255, 255, 255, 0.0)";
+        }
+
+        h4{
+            text-align: center;
+            color: white;
+            background:transparent;
+            font-size: 5vmin;
+            font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+            line-height: 10vh;
+
+        }
+
+        .background {
+            background: url(https://images.unsplash.com/reserve/wPCyys8TPCHY3GXm2N2D_ssp_inthewoods_1.jpg?ixlib=rb-0.3.5&s=f0d0a07d340e81fbb216807964151d02&dpr=1&auto=format&fit=crop&w=1000&q=80&cs=tinysrgb) no-repeat center center fixed;
+            width:100%;
+            height:100%;
+            text-align:center;
+            background-size: cover;
+            -webkit-filter: blur(8px);
+            -moz-filter: blur(8px);
+            -o-filter: blur(8px);
+            -ms-filter: blur(8px);
+            filter: blur(8px);
+            position: fixed;
+            left:0;
+            top: 0;
+        }
+        ß
+
+        /* The Close Button */
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 3vw;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .input-newsletter{
+            display:block;
+            position: relative;
+            font-size: 1vh;
+            /*padding: 1rem;*/
+            margin-left: auto;
+            margin-right: auto;
+            width:  30vw;
+            height: 8vh;
+        }
+
+        body {
+            background: transparent;
+        }
+
+        .center *{display:inline}
+
+        .container {
+            position: relative;
+            margin:auto;
+            width: 70%;
+            height: 70%;
+
+        }
+
+        .btn {
+            position: relative;
+            background-color: rgba(0, 0 ,0 ,0);
+            border: 2px solid #ffffff;
+            color: white;
+            padding: 1vh 1vw;
+            display: inline-block;
+            font-size: 4vmin;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.8s ease 0s;
+
+
+        }
+        .btn:hover {
+            background-color: #ffffff;
+            color: black;
+        }
+
+        #overlay {
+            position: fixed;
+            display: none;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 2;
+
+        }
+
+        #subscribe-form{
+            position: fixed;
+            margin-top:10%;
+            top: 30%;
+            left: 50%;
+            width: 40%;
+            min-width: 350px;
+            font-size: 20px;
+            background-color: white;
+            color: grey;
+            transform: translate(-50%,-50%);
+            -ms-transform: translate(-50%,-50%);
+            padding: 20px 20px 20px 20px;
+            border-radius: 20px;
+        }
+
+        .form-control {
+            min-height: 60px;
+        }
+
+        .form-button {
+            height: 60px;
+            width: 150px;
+            border: 2px solid grey;
+            background: none;
+            color: grey;
+            border-radius: 10px;
+        }
+        .button-container {
+            padding-left: 50%;
+        }
+        #button1 {
+            margin-left: -153px;
+        }
+
+        #popup {
+            display: none;
+            font-size: 12px;
+        }
+
+        #menu-close {
+            display: inline;
+            margin-top: -20px;
+            margin-left: 96%;
+            cursor: pointer;
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="background"></div>
+
+<div id="overlay">
+    <div id="subscribe-form"><form>
+        <span onclick="off()" id="menu-close">&times;</span>
+        <h3 style="text-align: center; color:grey">Stay Informed</h3>
+        <div class="form-group">
+            <label >Name</label>
+            <input type="text" class="form-control" id="input1" placeholder="Preferred Contact Name">
+        </div>
+        <div class="form-group">
+            <label >Email</label>
+            <input type="text" class="form-control" id="emailInput" placeholder="Email Address">
+        </div>
+        <div id="popup" class="popup">
+            <div class="popup-text">
+                <span class="close">&times;</span>
+                <p id = "popupText">You have successfully been subscribed. Check your email for latest updates!</p>
+            </div>
+        </div>
+        <div class="button-container">
+            <button onclick="off()" id="button1" type="button" class="form-button">Cancel</button>
+            <button id="button2" type="button" class="form-button">Subscribe</button>
+        </div>
+    </form></div>
+</div>
+
+
+
+<div class="container">
+    <div class="jumbotron" style="background:transparent">
+        <h1 style="color:white">ReeTech</h1>
+        <h2 style="color:white; text-align:center">Making e-waste recycling better and easier for everyone!</h2>
+        <h3 style="color:white; text-align:center">"COMING SOON"</h3>
+        <h4 id="timer" style="color:white; text-align:center"></h4>
+        <div style="text-align:center;">
+            <button onclick="on()" style= "text-align:center" type="button"  class="btn btn-lg">Subscribe</button>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Code from timer is from W3Schools, https://www.w3schools.com/
+    // Set the date we're counting down to
+    var countDownDate = new Date("Apr 15, 2018 15:37:25").getTime();
+
+    // Update the count down every 1 second
+    var x = setInterval(function() {
+
+        // Get todays date and time
+        var now = new Date().getTime();
+
+        // Find the distance between now an the count down date
+        var distance = countDownDate - now;
+
+        // Time calculations for days, hours, minutes and seconds
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Output the result in an element with id="demo"
+        document.getElementById("timer").innerHTML = days + "d " + hours + "h "
+            + minutes + "m " + seconds + "s ";
+
+        // If the count down is over, write some text
+        if (distance < 0) {
+            clearInterval(x);
+            document.getElementById("demo").innerHTML = "EXPIRED";
+        }
+    }, 1000);
+
+    function validateEmail(email)
+    {
+        var re = /\S+@\S+\.\S+/;
+        return re.test(email);
+    }
+
+
+    //get the required elements from the html file.
+    var popup = document.getElementById("popup");
+    var btn = document.getElementById("button2");
+    var span = document.getElementsByClassName("close")[0];
+    var emailInput = document.getElementById("emailInput");
+    var popupText = document.getElementById("popupText");
+    var form = document.getElementById("subscribe-form");
+    var overlay = document.getElementById("overlay");
+    // When the user clicks the button, open the popup
+    btn.onclick = function() {
+        popupText.innerHTML = "You have successfully been subscribed. Check your email for latest updates!";
+        if(!validateEmail(emailInput.value)){
+            popupText.innerHTML = "Please enter a valid email.";
+        }
+        popup.style.display = "block";
+    }
+    // When the user clicks on <span> (x), close the popup
+    span.onclick = function() {
+        popup.style.display = "none";
+    }
+</script>
+<script>
+    function on() {
+        document.getElementById("overlay").style.display = "block";
+    }
+
+    function off() {
+        document.getElementById("overlay").style.display = "none";
+    }
+</script>
+</body>
+
+
+</html>

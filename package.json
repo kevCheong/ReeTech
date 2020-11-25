@@ -1,0 +1,20 @@
+{
+  "name": "webtechcomingsoon",
+  "version": "1.0.0",
+  "engines": {
+    "node": "8.1.2"
+  },
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3",
+    "mongodb": "^3.6.2",
+    "mongoose": "^5.10.6"
+  }
+}

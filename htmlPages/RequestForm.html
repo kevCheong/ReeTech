@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" type="text/css" href="topbar.css">
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -webkit-font-smoothing: antialiased;
+        -moz-font-smoothing: antialiased;
+        -o-font-smoothing: antialiased;
+        font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+    }
+
+    body {
+        margin: 0;
+        font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
+        font-weight: 100;
+        font-size: 12px;
+        line-height: 30px;
+        color: #777;
+        background-image: url(https://wallpaperscraft.com/image/summer_nature_road_leaves_trees_90616_1920x1080.jpg);
+        background-size:cover;
+        background-blend-mode: color;
+        background-position: center;
+    }
+
+    .container {
+        max-width: 400px;
+        width: 100%;
+        margin: 0 auto;
+        position: relative;
+    }
+
+    #contact input[type="text"],
+    #contact input[type="email"],
+    #contact input[type="tel"],
+    #contact input[type="url"],
+    #contact textarea,
+    #contact button[type="submit"] {
+        font: 400 12px/16px "Source Sans Pro", Helvetica, Arial, sans-serif;
+    }
+
+    #contact {
+        background: #F9F9F9;
+        padding: 25px;
+        margin: 150px 0;
+        box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+    }
+
+    #contact h3 {
+        display: block;
+        font-size: 30px;
+        font-weight: 300;
+        margin-bottom: 10px;
+    }
+
+    #contact h4 {
+        margin: 5px 0 15px;
+        display: block;
+        font-size: 13px;
+        font-weight: 400;
+    }
+
+    fieldset {
+        border: medium none !important;
+        margin: 0 0 10px;
+        min-width: 100%;
+        padding: 0;
+        width: 100%;
+    }
+
+    #contact input[type="text"],
+    #contact input[type="email"],
+    #contact input[type="tel"],
+    #contact input[type="url"],
+    #contact textarea {
+        width: 100%;
+        border: 1px solid #ccc;
+        background: #FFF;
+        margin: 0 0 5px;
+        padding: 10px;
+    }
+
+    #contact input[type="text"]:hover,
+    #contact input[type="email"]:hover,
+    #contact input[type="tel"]:hover,
+    #contact input[type="url"]:hover,
+    #contact textarea:hover {
+        -webkit-transition: border-color 0.3s ease-in-out;
+        -moz-transition: border-color 0.3s ease-in-out;
+        transition: border-color 0.3s ease-in-out;
+        border: 1px solid #aaa;
+    }
+
+    #contact textarea {
+        height: 100px;
+        max-width: 100%;
+        resize: none;
+    }
+
+    #contact button[type="submit"] {
+        cursor: pointer;
+        width: 100%;
+        border: none;
+        background: #3b956e;
+        color: #FFF;
+        margin: 0 0 5px;
+        padding: 10px;
+        font-size: 15px;
+    }
+
+    #contact button[type="submit"]:hover {
+        background: #327555;
+        -webkit-transition: background 0.3s ease-in-out;
+        -moz-transition: background 0.3s ease-in-out;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+    #contact button[type="submit"]:active {
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+    }
+
+    {
+        text-align: center;
+    }
+
+    #contact input:focus,
+    #contact textarea:focus {
+        outline: 0;
+        border: 1px solid #aaa;
+    }
+
+    ::-webkit-input-placeholder {
+        color: #888;
+    }
+
+    :-moz-placeholder {
+        color: #888;
+    }
+
+    ::-moz-placeholder {
+        color: #888;
+    }
+
+    :-ms-input-placeholder {
+        color: #888;
+    }
+</style>
+<head>
+    <meta charset="UTF-8">
+    <title>Pickup Service</title>
+</head>
+<ul class="topnav">
+    <button onclick="menu()"><i class="material-icons menu-icon" style="font-size:36px">menu</i></button>
+    <li><a class="active" href="index.html">ReeTech</a></li>
+    <li><a href="maps.html">Where to Recycle</a></li>
+    <li><a href="impactpage.html">Why Recycle</a></li>
+    <li><a href="RequestForm.html">Pickup Service</a></li>
+    <li><a href="deliveryTracker.html">Pickup Progress Tracker</a></li>
+<li><a href="collectionpartner.html">Collection Partners</a></li>
+</ul>
+<body>
+<!--HTML-->
+<div class="container">
+    <form id="contact" action = "/post" method="post" onsubmit="storePostcode()">
+        <h3>Request a Pick-up</h3>
+        <h4>Send a request for a pickup service in your area</h4>
+        <fieldset>
+            <input name = "NAME" placeholder="Your name" type="text" tabindex="1" required autofocus>
+        </fieldset>
+        <fieldset>
+            <input name = "EMAIL" placeholder="Your Email Address" type="email" tabindex="2" required>
+        </fieldset>
+        <fieldset>
+            <input name = "PHONE" placeholder="Your Phone Number (optional)" type="tel" tabindex="3" >
+        </fieldset>
+        <fieldset>
+            <input name = "ADDRESS_LINE_1" placeholder="Street Address 1" type="text" tabindex="4" required>
+        </fieldset>
+        <fieldset>
+            <input name = "ADDRESS_LINE_2" placeholder="Street Address 2 (optional)" type="text" tabindex="5" >
+        </fieldset>
+        <fieldset>
+            <input name = "SUBURB" placeholder="Suburb" type="text" tabindex="6" required>
+        </fieldset>
+        <fieldset>
+            <input name = "POSTCODE" id = "Postcode" placeholder="Postcode" type="text" tabindex="7" required>
+        </fieldset>
+        <fieldset>
+            What would you like to recycle?
+            <select name="WASTE_TYPE">
+                <option value = "Mobile Phones">Mobile Phones</option>
+                <option value = "Televisions">Televisions</option>
+                <option value = "Batteries">Batteries</option>
+                <option value = "Computers">Computers</option>
+                <option value = "Small Appliances">Small Appliances</option>
+                <option value = "Large Appliances">Large Appliances</option>
+                <option value = "Others">Others</option>
+            </select>
+        </fieldset>
+        <fieldset>
+            <textarea name = "DESCRIPTION" placeholder="If you selected others, please specify here..." tabindex="8"></textarea>
+        </fieldset>
+        <fieldset>
+            <button type="submit" id="contact-submit" data-submit="...Sending">Submit</button>
+        </fieldset>
+    </form>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/1.6.1/less.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script>
+        function storePostcode() {
+                console.log("BUTTON PRESSED");
+                var postcodeIn = $('#Postcode').val()
+                console.log("Postcode from form is " + postcodeIn);
+                sessionStorage.setItem('POSTCODE', postcodeIn);
+        };
+    </script>
+    <script src="topbar.js"></script>
+</div>
+</body>
+</html>

@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en">
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/rangeslider.js/2.3.2/rangeslider.css" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+    /*Header Styling*/
+    ul.topnav {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #FFF;
+        font-family: 'Source Sans Pro';
+        font-size: 16px;
+        /*box-shadow: 0 3px 3px 3px grey;*/
+    }
+
+    ul.topnav li {float: left;}
+
+    ul.topnav li a {
+        display: block;
+        color: Black;
+        text-align: center;
+        padding: 20px;
+        text-decoration: none;
+        transition: 1s;
+        height: 21px;
+    }
+
+    ul.topnav li a:hover:not(.active) {background-color: #333; color: #FFF}
+
+    ul.topnav li a.active {background-color: #333; color: #FFF}
+
+    ul.topnav li.right {float: right;}
+
+    ul.topnav button {
+        display: none;
+        float: left;
+        background:none;
+        border:none;
+        margin: 5px 10px 0 0;
+        cursor: pointer;
+    }
+
+    @media screen and (max-width: 800px){
+        ul.topnav li.right,
+        ul.topnav li {float: none;}
+        ul.topnav li {display: none}
+        ul.topnav button {display: block}
+    }
+
+
+</style>
+<style>
+    .navigator {
+        grid-area: navigator;
+        display: flex;
+        flex-direction: column;
+        max-height: 100%;
+        min-height: 100%;
+        box-shadow: 1px 0 4px rgba(41,51,57,.5);
+        z-index: 1;
+    }
+    .map {grid-area: map; z-index:0;}
+    .header {grid-area: header; box-shadow: 0 1px 4px rgba(41,51,57,.5); z-index: 2;}
+
+    .map-interface {
+        display: grid;
+        grid-template-areas:
+                'header header'
+                'navigator map';
+        grid-template-columns: 380px 1fr;
+        grid-template-rows: 61px 1fr;
+        background-color: #FFFFFF;
+        height: 100%;
+        max-height: 100vh;
+        min-height: 100vh;
+        /*overflow: hidden;*/
+        font-family: 'Source Sans Pro';
+    }
+
+    @media screen and (max-width: 800px){
+        .map-interface{
+            max-height: none;
+        }
+        .navigator {
+            max-height: 97%;
+            min-height: 97%;
+            overflow-y: hidden;
+            display:block;
+            overflow-y: auto;
+        }
+
+    }
+
+
+    .loading {
+        display: none;
+        grid-column: 2;
+        grid-row: 2;
+        z-index: 1;
+        background-color: rgba(123,123,123,0.5);
+    }
+
+
+
+    .near { grid-area: near_;}
+    .on_the_way { grid-area: on_the_way;}
+
+    .near, .on_the_way {
+        padding: 10px 10px 10px 10px;
+        border-bottom: 2px solid black;
+        transition: 0.3s;
+    }
+
+    .near:hover, .on_the_way:hover {
+        background-color: #dbdbdb;
+        cursor: pointer;
+    }
+
+    .selected {
+        background-color: #dbdbdb;
+        color: black;
+        border-bottom:6px solid black;
+        font-weight: bold;
+    }
+
+    .search_type {
+        display: grid;
+        grid-template-areas:
+                'near_ on_the_way';
+        grid-template-columns: 1fr 1fr;
+        text-align: center;
+
+    }
+
+    .close {
+        position: relative;
+        margin: 0 10px 0 325px;
+        display: none;
+    }
+
+    @media screen and (max-width: 800px){
+        .close{
+            display: block;
+        }
+    }
+
+    .close button {
+        background:none;
+        border:none;
+    }
+
+    .close button:hover {
+        cursor: pointer;
+    }
+
+    #search-bar-1, #search-bar-2, #description1, #description2, #button_set_1 {
+        display: none;
+    }
+
+
+    .input-field { grid-area: input-field; }
+    .search-button-container { grid-area: search-button; }
+
+    .search-bar {
+        display: grid;
+        grid-template-areas:
+                'input-field search-button';
+        grid-template-columns: 260px 1fr;
+        background-color: #FFFFFF;
+        height: 40px;
+        margin: 10px 20px 0 20px;
+        border-radius: 2px;
+        box-shadow: 1px 1px 2px 1px grey;
+        padding-left: 15px;
+    }
+
+    #autocomplete, #autocomplete1, #autocomplete2 {
+        border:none;
+        height: 100%;
+        padding: 0;
+        font-size: 18px;
+        outline: 0;
+        width:100%
+    }
+
+    .input-field1 {
+        grid-column: 1/3 ;
+        padding-right: 20px;
+    }
+
+    .search-button-container {
+        text-align: center;
+        height: 100%;
+        width: 100%;
+        cursor: pointer;
+        border-left: 1px solid #b6b6b6;
+
+    }
+
+    #search-button {
+        height: 40px;
+        width: 100%;
+        border: none;
+        border-radius: 0 2px 2px 0;
+        color: white;
+        background-color: #2A87CA;
+    }
+
+    #search-button:hover {
+        cursor: pointer;
+    }
+
+    .expand {
+        float: right;
+        margin-right: 20px;
+        display: inline-block;
+        color: #2A87CA;
+        text-decoration: underline;
+    }
+
+    .menu {
+        display:block;
+        /*height: 160px;
+        overflow-y: auto;*/
+    }
+
+    #waste-menu {
+        list-style-type: none;
+        padding-left:80px;
+    }
+
+    .revise-search-button-container {
+        text-align: right;
+        padding: 10px 10px 0 0;
+    }
+
+    .revise-search-button, .bottom-search-button {
+        background-color: #ffffff;
+        border-radius: 2px;
+        border: 2px solid #555555;
+        color: #555555;
+        padding: 7px 10px 7px 10px;
+        text-align: center;
+        -webkit-transition-duration: 0.5s; /* Safari */
+        transition-duration: 0.5s;
+    }
+
+    .bottom-search-button {
+        border: 2px solid #2A87CA;
+        color: #2A87CA;
+        padding: 7px 25px 7px 25px;
+        margin-right: 15px;
+    }
+
+    .revise-search-button:hover{
+        background-color: #555555;
+        color: #ffffff;
+    }
+
+    .bottom-search-button:hover {
+        background-color: #2A87CA;
+        color: #ffffff;
+    }
+
+    /*Grid template for search result layout */
+    .result-name { grid-area: result-name; }
+    .result-address { grid-area: result-address; }
+    .result-distance { grid-area: result-distance;
+        text-align: right; padding-right: 20px;}
+    .read-more {
+        grid-area: read-more;
+        text-decoration: underline;
+        color: #067e18;
+        cursor: pointer;
+    }
+    .result-directions { grid-area: result-directions; }
+
+    .result {
+        display: grid;
+        grid-template-areas:
+                'result-name result-distance'
+                'result-address result-distance'
+                'read-more result-directions';
+        grid-template-columns: 250px 1fr;
+        font-family: 'Source Sans Pro';
+        border-top: 1px solid grey;
+        padding: 10px 0px 10px 20px;
+    }
+
+
+    .results {
+        flex: 1 1;
+        overflow-y: auto;
+    }
+
+    .filter-bar {
+        transition-duration: 0.5s;
+        /*border-top: black solid 1px;
+        border-bottom: black solid 1px;*/
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .filter-bar:hover {
+        background-color: #cccccc;
+        cursor: pointer;
+    }
+
+    .shift-left {
+        padding-left: 20px;
+    }
+
+    /*Styling of the button showing text 'Directions' */
+    .directions-button {
+        background-color: #ffffff; /* Green */
+        border-radius: 2px;
+        border: 2px solid #067e18;
+        color: #067e18;
+        padding: 7px 10px 7px 10px;
+        text-align: center;
+        -webkit-transition-duration: 0.5s; /* Safari */
+        transition-duration: 0.5s;
+    }
+
+    .directions-button:hover {
+        border-color: #067e18;
+        background-color: #067e18; /* Green */
+        color: #ffffff;
+        cursor: pointer;
+    }
+    /*General Page Styling*/
+
+    i {
+        margin-top: 8px;
+        color: grey;
+    }
+
+    html, body {
+        margin: 0;
+        height: 100%;
+    }
+</style>
+<style>
+    /*Google Autocomplete styling */
+
+    .pac-container {
+        width: 368px !important;
+        margin-left: -15px !important;
+    }
+</style>
+<style>
+    /* Range Slider Styling*/
+    .slidecontainer {
+        /*width: 100%;*/
+        padding: 20px;
+    }
+
+    .rangeslider__handle {
+        width: 36px;
+        height: 36px;
+    }
+
+    .rangeslider__ruler {
+        font-size: 1em;
+        margin: 10px 3px 0 3px;
+        position: relative;
+        top: 100%;
+        text-align: justify;
+    }
+
+    /* Workaround to justify only one-line.
+     Extra element to force a new line.*/
+    .rangeslider__ruler:after {
+        content: "";
+        display: inline-block;
+        width: 100%;
+    }
+
+    .rangeslider__current_value {
+        text-align: center;
+        color: #1a84af;
+        margin-top: -30px;
+        font-size: 1.1em;
+    }
+    .rangeslider,
+    .rangeslider__fill {
+        transition: background 1s;
+    }
+
+    .rangeslider__fill {
+        background-color: #00b3b3;
+    }
+
+    .rangeslider--is-lowest-value {
+        background-color: white;
+    }
+
+    .rangeslider--is-highest-value .rangeslider__fill {
+        background-color: #1a84af;
+    }
+</style>
+<style>
+    /*Marker Infowindow Styling*/
+    .gm-style .gm-style-iw {
+        top: 0 !important;
+        left: 0 !important;
+
+        width: 100% !important;
+        min-height: 120px !important;
+        max-height: 400px !important;
+        box-sizing: border-box !important;
+        padding: 10px 10px 10px 15px;
+        display: block !important;
+        overflow-y: auto;
+    }
+
+    .iw-bottom-gradient {
+        position: sticky;
+        width: 100%;
+        height: 35px;
+        bottom: -15px;
+        left: 0px;
+        background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+        background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+        background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+        background: -ms-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+    }
+
+    .gm-style-iw > div {
+        max-height: none !important;
+
+    }
+
+    .tg {
+        width: 100%;
+    }
+
+    .table-header {
+        background-color: #0d990d;
+    }
+
+    th {
+        padding: 10px 0 10px 0;
+    }
+
+    .grey {
+        background-color: #cccccc;
+    }
+
+    .grey:hover {
+        background-color: #aaaaaa;
+    }
+
+    .white {
+        background-color: #eeeeee;
+    }
+
+    .white:hover {
+        background-color: #999999;
+    }
+
+    .infowindow-cells-0 {
+        text-align: left;
+        padding-left: 10px;
+    }
+
+    .infowindow-cells {
+        text-align: center;
+    }
+
+    .iw-directions-button {
+        float: right;
+        margin-bottom: 10px;
+    }
+
+</style>
+<style>
+    /* Loading wheel styling */
+
+    .loading {
+        display: none;
+        grid-template-columns: 1fr 302px 1fr;
+        grid-template-rows: 1fr 302px 1fr;
+    }
+
+    .lds-css {
+        grid-row: 2;
+        grid-column: 2;
+    }
+
+    @keyframes lds-dual-ring {
+        0% {
+            -webkit-transform: rotate(0);
+            transform: rotate(0);
+        }
+        100% {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+    @-webkit-keyframes lds-dual-ring {
+        0% {
+            -webkit-transform: rotate(0);
+            transform: rotate(0);
+        }
+        100% {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+    .lds-dual-ring {
+        position: relative;
+    }
+    .lds-dual-ring div {
+        position: absolute;
+        width: 160px;
+        height: 160px;
+        top: 20px;
+        left: 20px;
+        border-radius: 50%;
+        border: 30px solid #000;
+        border-color: #0aa811 transparent #0aa811 transparent;
+        -webkit-animation: lds-dual-ring 1.3s linear infinite;
+        animation: lds-dual-ring 1.3s linear infinite;
+    }
+    .lds-dual-ring {
+        width: 200px !important;
+        height: 200px !important;
+        -webkit-transform: translate(-100px, -100px) scale(1) translate(100px, 100px);
+        transform: translate(-100px, -100px) scale(1) translate(100px, 100px);
+    }
+
+</style>
+<head>
+    <meta charset="UTF-8">
+    <title>Maps</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rangeslider.js/2.3.2/rangeslider.js"></script>
+</head>
+<body>
+<div class="map-interface">
+    <!--header-->
+    <div class="header">
+        <ul class="topnav">
+            <button onclick="menu()"><i class="material-icons menu-icon" style="font-size:36px">menu</i></button>
+            <button onclick="hide_show_sidebar(1)"><i class="material-icons menu-icon" style="font-size:36px; float:right">search</i></button>
+            <li><a class="active" href="frontpage.html">ReeTech</a></li>
+            <li><a href="maps.html">Where to Recycle</a></li>
+            <li><a href="impactpage.html">Why Recycle</a></li>
+            <li><a href="RequestForm.html">Pickup Service</a></li>
+            <li><a href="deliveryTracker.html">Pickup Progress Tracker</a></li>
+            <li><a href="collectionpartner.html">Collection Partners</a></li>
+        </ul>
+    </div>
+
+    <!--the section where you can search and filter-->
+    <div class="navigator">
+        <div class="search-container">
+            <div class="search_type">
+                <div class="near selected" onclick="change_search_type(1)">Recycle Near Me</div>
+                <div class="on_the_way" onclick="change_search_type(0)">Recycle Along My Way</div>
+            </div>
+            <div class="close"><button onclick="hide_show_sidebar(0)"><i class="material-icons menu-icon" style="font-size:36px">close</i></button></div>
+            <div class="shift-left" id="description0">
+                <br>
+                My address
+            </div>
+            <!--search bar-->
+            <div class="search-bar" id="search-bar-0">
+                <div class="input-field">
+                    <input id="autocomplete" placeholder="Find your suburb or address..">
+                </div>
+                <div class="search-button-container" onclick="refresh(0)"><button id="search-button"><b>Find</b></button></div>
+            </div>
+            <div class="shift-left" id="description1">
+                <br>
+                Origin
+            </div>
+            <div class="search-bar" id="search-bar-1">
+                <div class="input-field1">
+                    <input id="autocomplete1" placeholder="Find your suburb or address..">
+                </div>
+            </div>
+            <div class="shift-left" id="description2">
+                <br>
+                Destination
+            </div>
+            <div class="search-bar" id="search-bar-2">
+                <div class="input-field1">
+                    <input id="autocomplete2" placeholder="Find your suburb or address..">
+                </div>
+            </div>
+            <br>
+            <div class="shift-left filter-bar" onclick="expand()">
+                <b>Filter by Waste</b>
+                <div class="expand" id="expand_more">hide</div>
+            </div>
+            <div class="menu">
+                <ul id="waste-menu">
+                    <li><input type="checkbox" value="Batteries"> Batteries</li>
+                    <li><input type="checkbox" value="Computers"> Computers and Accessories</li>
+                    <li><input type="checkbox" value="Electricals"> Electrical Appliances</li>
+                    <li><input type="checkbox" value="light_Globes"> Light Globes</li>
+                    <li><input type="checkbox" value="Mobilephones"> Mobile Phones</li>
+                    <li><input type="checkbox" value="Printer_catridges"> Printer Cartridges</li>
+                    <li><input type="checkbox" value="Televisions"> Televisions</li>
+                </ul>
+            </div>
+            <div class="shift-left filter-bar" id="slider_bar" onclick="expand_slider()">
+                <b>Filter By Distance</b>
+                <div class="expand" id="expand_more_distance">hide</div>
+            </div>
+            <div class="slidecontainer">
+                <input type="range" min="1" max="30" value="2">
+                <div class="rangeslider__ruler">1km 30km</div>
+                <div class="rangeslider__current_value"></div>
+            </div>
+            <div class="revise-search-button-container" id="button_set_0">
+                <button class="revise-search-button" onclick="reset(0)">Clear Filters</button>
+                <button class="bottom-search-button" onclick="refresh(0)">Search</button>
+            </div>
+            <div class="revise-search-button-container" id="button_set_1">
+                <button class="revise-search-button" onclick="reset(1)">Clear Filters</button>
+                <button class="bottom-search-button" onclick="refresh(1)">Search</button>
+            </div>
+            <br>
+        </div>
+        <div class="results" id="results">
+            <!--<div class="result">-->
+            <!--<div class="result-name">Dropoff one</div>-->
+            <!--<div class="result-address">1 Random Place, Melbourne</div>-->
+            <!--<div class="result-distance">0.5km</div>-->
+            <!--<div class="result-directions"><button>directions</button></div>-->
+            <!--<div class="read-more">read more</div>-->
+            <!--</div>-->
+        </div>
+    </div>
+    <!--the map-->
+    <div class="map" id="map"></div>
+    <div class="loading">
+        <div class="lds-css ng-scope"><div style="width:100%;height:100%" class="lds-dual-ring"><div></div></div></div>
+    </div>
+</div>
+</body>
+<script>
+    function genstr(data, filter_list, protocol=0) {
+        var count = 0;
+        var button = 'Directions';
+        var mystr = '<div class="shift-left"><b>Recycling spots near me:</b></div><br>';
+        var origin_dest_distance=0;
+        if (protocol!==0){
+            button='Show Route';
+            mystr = '<div class="shift-left"><b>Best Dropoffs on the way:</b></div><br>';
+            origin_dest_distance = calcDistance({
+                GEO_LON: originArray[0].position.lng(),
+                GEO_LAT: originArray[0].position.lat()
+            }, originArray[1].position)-0.5;
+        }
+
+        for (var i = 0; i < data.length; i++) {
+            if (satisfy(data[i], filter_list)) {
+                mystr += '<div class="result" value='+i.toString()+'><div class="result-name"><b>' + data[i]["BUSINESSNAME"] + '</b></div>';
+                mystr += '<div class="result-address">' + data[i]["ADDRESS"] + ', ' + data[i]["SUBURB"] + '</div>';
+                mystr += '<div class="result-distance">';
+                if(protocol!==0){
+                    mystr+='+';
+                }
+                mystr += (data[i].distance-origin_dest_distance).toFixed(2);
+                mystr += 'km' + '</div>';
+                mystr += '<div class="result-directions"><button class="directions-button">'+button+'</button></div><div class="read-more" id="'+ i.toString() +'">read more</div></div>';
+                count += 1;
+                if (protocol!==0&&count>=10){
+                    break;
+                }
+            }
+        }
+        console.log(mystr);
+        return mystr;
+    }
+
+    // Checks if a data point satisfies the filter requirements
+    function satisfy(data_point, filter_list) {
+        for (var i = 0; i < filter_list.length; i++) {
+            if (data_point[filter_list[i]] == 'False') {
+                console.log(false);
+                return false;
+            }
+        }
+        console.log(true);
+        return true;
+    }
+
+    // google map object
+    var map;
+    var markersArray = [];
+    var originArray = [];
+    var geocoder;
+    var infowindow;
+    var directionsService;
+    var directionsDisplay;
+
+    function initMap() {
+        //intiates map, default centre of map is center of Melbourne
+        var melbourne = {lat: -37.814, lng: 144.963};
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 12,
+            center: melbourne,
+            styles: [
+                {
+                    "featureType": "poi",
+                    "elementType": "labels.text",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.business",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "labels.icon",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                }
+            ]
+        });
+
+        var marker = new google.maps.Marker({
+            position: melbourne,
+            map: map
+        });
+        originArray.push(marker);
+
+        geocoder = new google.maps.Geocoder();
+
+        // A new Info Window is created and set content
+        infowindow = new google.maps.InfoWindow({
+            //content: "dsafgsdgsdfgdsfg",
+            // Assign a maximum value for the width of the infowindow allows
+            // greater control over the various content elements
+            maxWidth: 350
+        });
+
+        //initiates autocomplete, the function to autocomplete addresses
+        var placeSearch, autocomplete, autocomplete1, autocomplete2;
+        autocomplete = new google.maps.places.Autocomplete(
+            /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
+            {
+                types: ['geocode'],
+                componentRestrictions: {country: 'au'}
+            });
+        autocomplete1 = new google.maps.places.Autocomplete(
+            /** @type {!HTMLInputElement} */(document.getElementById('autocomplete1')),
+            {
+                types: ['geocode'],
+                componentRestrictions: {country: 'au'}
+            });
+        autocomplete2 = new google.maps.places.Autocomplete(
+            /** @type {!HTMLInputElement} */(document.getElementById('autocomplete2')),
+            {
+                types: ['geocode'],
+                componentRestrictions: {country: 'au'}
+            });
+
+
+        // Bias the autocomplete object to the user's geographical location,
+        // as supplied by the browser's 'navigator.geolocation' object.
+        function geolocate() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    var geolocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    var circle = new google.maps.Circle({
+                        center: geolocation,
+                        radius: position.coords.accuracy
+                    });
+                    autocomplete.setBounds(circle.getBounds());
+                });
+            }
+        }
+        geolocate();
+
+        //initiates route display function on maps
+        directionsService = new google.maps.DirectionsService;
+        directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
+        directionsDisplay.setMap(map);
+
+
+    }
+
+    // Displays search results, and mark them on map
+    function refresh(protocol) {
+        var icon = {
+            url: "https://recyclingnearyou.com.au//images/new/icons/map_pin.png", // url
+            scaledSize: new google.maps.Size(30, 50), // scaled size
+            origin: new google.maps.Point(0, 0), // origin
+            anchor: new google.maps.Point(15, 48) // anchor
+        };
+        initiate_loading();
+        //google.maps.event.clearInstanceListeners(markersArray);
+        deleteOverlays();
+        if(protocol===0){
+            codeAddress();
+        } else {
+            codeAddresses();
+        }
+
+        function codeAddress() {
+            var address = document.getElementById('autocomplete').value;
+            geocoder.geocode({'address': address}, function (results, status) {
+                if (status == 'OK') {
+                    deleteOrigin();
+
+                    console.log(results[0].geometry.location.lng(), results[0].geometry.location.lat());
+                    map.setCenter(results[0].geometry.location);
+                    var marker = new google.maps.Marker({
+                        map: map,
+                        position: results[0].geometry.location
+                    });
+                    //map.setZoom(15);
+
+                    originArray.push(marker);
+                    var str = $('.rangeslider__current_value').text().toString();
+                    var query_uri = '/api/lon/' + originArray[0].position.lng().toString() + '/lat/' + originArray[0].position.lat().toString() + '/distance/'+str.substring(0, str.length-2);
+                    console.log(str);
+                    $.get(query_uri, function(data, status){
+                        process(data, status);
+                    });
+                } else {
+                    finish_loading();
+                    alert("Please enter a valid address");
+                }
+            });
+
+        }
+
+        function codeAddresses() {
+            var start = document.getElementById('autocomplete1').value;
+            var destination = document.getElementById('autocomplete2').value;
+            geocoder.geocode({'address': start}, function (results, status) {
+                if (status == 'OK') {
+                    deleteOrigin();
+                    console.log(results[0].geometry.location.lng(), results[0].geometry.location.lat());
+                    var marker = new google.maps.Marker({
+                        map: map,
+                        position: results[0].geometry.location
+                    });
+                    originArray.push(marker);
+                    geocoder.geocode({'address': destination}, function (results2, status2) {
+                        if (status2 == 'OK') {
+                            console.log(results2[0].geometry.location.lng(), results2[0].geometry.location.lat());
+                            var marker2 = new google.maps.Marker({
+                                map: map,
+                                position: results2[0].geometry.location
+                            });
+                            originArray.push(marker2);
+                            var latitude = (results[0].geometry.location.lat()+results2[0].geometry.location.lat())/2;
+                            var longitude  = (results[0].geometry.location.lng()+results2[0].geometry.location.lng())/2;
+                            map.setCenter(new google.maps.LatLng(latitude, longitude));
+
+                            map.setZoom(12);
+                            var distance = calcDistance({
+                                GEO_LON: results[0].geometry.location.lng(),
+                                GEO_LAT: results[0].geometry.location.lat()
+                            }, results2[0].geometry.location).toString();
+                            console.log(distance);
+                            var query_uri = '/api/lon/' + longitude.toString() + '/lat/' + latitude.toString() + '/distance/'+distance;
+                            $.get(query_uri, function(data, status){
+                                process(data, status, 1);
+                            });
+                        } else {
+                            deleteOrigin();
+                            finish_loading();
+                            alert("Please enter a valid destination");
+                        }
+                    });
+                } else {
+                    finish_loading();
+                    alert("Please enter a valid origin");
+                }
+            });
+
+
+        }
+
+        function deleteOrigin() {
+            if (originArray) {
+                for (i in originArray) {
+                    originArray[i].setMap(null);
+                }
+                originArray.length = 0;
+            }
+        }
+
+        // AJAX request to get data for search results and filter results
+
+        // $.get(query_uri, function(data, status){
+        //     process(data, status);
+        // });
+
+        function process(data, status, addresses=0) {
+            // console.log("get ran");
+            // console.log(data);
+            var filter_list = get_checked();
+            if (addresses===0){
+                assign_distance(data);
+            }else{
+                elliptical_distance(data);
+            }
+
+            data.sort(function(a, b){
+                return a.distance-b.distance;
+            });
+
+            if (addresses===0){
+                var bounds  = new google.maps.LatLngBounds();
+                for (var k = 0; k < data.length; k++){
+                    bounds.extend(new google.maps.LatLng(data[k].GEO_LAT, data[k].GEO_LON));
+                }
+                map.fitBounds(bounds);
+                map.panToBounds(bounds);
+            }
+
+            document.getElementById("results").innerHTML = genstr(data, filter_list, addresses);
+            plotter(data, filter_list, addresses);
+
+            document.getElementById('waste-menu').onclick = function (event) {
+                if (event.target.type !== 'checkbox') return;
+                var changed_filter = get_checked();
+                document.getElementById("results").innerHTML = genstr(data, changed_filter, addresses);
+                deleteOverlays();
+                plotter(data, changed_filter, addresses);
+            };
+
+            //route display triggers (event delegation)
+            document.getElementById('results').onclick = function (event) {
+                if (event.target.className !== 'directions-button') return;
+
+                let pane = event.target.closest('.result');
+                // console.log(pane.childNodes[1].textContent);
+                // console.log(pane.getAttribute("value"));
+                if (addresses===0) {
+                    calculateAndDisplayRoute(directionsService, directionsDisplay, data[pane.getAttribute("value")]);
+                } else {
+                    // console.log(originArray[0].position.lng(0), originArray[1].position.lng());
+                    calculateAndDisplayRoutes(directionsService, directionsDisplay, data[pane.getAttribute("value")], originArray[1].position);
+                }
+            };
+
+            finish_loading();
+        }
+
+        //plots route from A to B on maps
+        function calculateAndDisplayRoute(directionsService, directionsDisplay, dest) {
+            console.log(dest);
+            var destination = new google.maps.LatLng(parseFloat(dest["GEO_LAT"]),parseFloat(dest["GEO_LON"]));
+            directionsService.route({
+                origin: document.getElementById('autocomplete').value,
+                destination: destination,
+                //document.getElementById('end').value
+                travelMode: 'DRIVING'
+            }, function (response, status) {
+                if (status === 'OK') {
+                    directionsDisplay.setDirections(response);
+                } else {
+                    window.alert(status);
+                }
+            });
+        }
+
+        function calculateAndDisplayRoutes(directionsService, directionsDisplay, dest, final_dest) {
+            console.log(dest);
+            var destination = new google.maps.LatLng(parseFloat(dest["GEO_LAT"]),parseFloat(dest["GEO_LON"]));
+            directionsService.route({
+                origin: document.getElementById('autocomplete1').value,
+                destination: final_dest,
+                //document.getElementById('end').value
+                waypoints: [{
+                    location: destination,
+                    stopover: true
+                }],
+                optimizeWaypoints: true,
+                travelMode: 'DRIVING'
+            }, function (response, status) {
+                if (status === 'OK') {
+                    directionsDisplay.setDirections(response);
+                } else {
+                    window.alert(status);
+                }
+            });
+        }
+
+        function assign_distance(data){
+            for (var i = 0; i < data.length; i++){
+                data[i].distance = calcDistance(data[i], originArray[0].position);
+            }
+        }
+
+        function elliptical_distance(data) {
+            for (var i = 0; i < data.length; i++){
+                data[i].distance = calcDistance(data[i], originArray[0].position)+calcDistance(data[i], originArray[1].position);
+            }
+        }
+
+
+        // gets values of check items in filter
+        function get_checked() {
+            var $boxes = $('input[type=checkbox]:checked');
+            var filter = [];
+            $boxes.each(function () {
+                console.log($(this).val());
+                filter.push($(this).val());
+            });
+            console.log(filter);
+            return filter;
+        }
+
+        // plots data on map if it satisfies filter lists
+        function plotter(data, filter_list, addresses=0) {
+            var counter = 0;
+            for (var i = 0; i < data.length; i++) {
+                var coords = data[i];
+                if (satisfy(coords, filter_list)) {
+                    var latLng = new google.maps.LatLng(coords["GEO_LAT"], coords["GEO_LON"]);
+                    console.log(coords["GEO_LAT"], coords["GEO_LON"]);
+                    var marker = new google.maps.Marker({
+                        position: latLng,
+                        map: map,
+                        icon: icon,
+                        id: coords["_id"]
+                    });
+
+                    document.getElementById(i.toString()).addEventListener('click', (function(marker, i) {
+                        return function() {
+                            console.log("info window opened");
+                            infowindow.setContent(create_infowindow_string(data, i, addresses));
+                            infowindow.open(map, marker);
+                            $('.gm-style-iw').parent().css('width', '350px');
+                            $('.gm-style-iw').append('<div class="iw-bottom-gradient"></div>');
+                            document.getElementById('iw-directions-button').addEventListener('click', function(event) {
+                                console.log(this.getAttribute("value"));
+                                if (addresses===0){
+                                    calculateAndDisplayRoute(directionsService, directionsDisplay, data[this.getAttribute("value")]);
+                                } else {
+                                    calculateAndDisplayRoutes(directionsService, directionsDisplay, data[this.getAttribute("value")], originArray[1].position);
+                                }
+                                if (infowindow) {
+                                    infowindow.close(); }
+                            });
+                        }
+                    })(marker, i));
+
+                    google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                        return function() {
+                            console.log("info window opened");
+                            infowindow.setContent(create_infowindow_string(data, i, addresses));
+                            infowindow.open(map, marker);
+                            $('.gm-style-iw').parent().css('width', '350px');
+                            $('.gm-style-iw').append('<div class="iw-bottom-gradient"></div>');
+                            document.getElementById('iw-directions-button').addEventListener('click', function(event) {
+                                console.log(this.getAttribute("value"));
+                                if (addresses===0){
+                                    calculateAndDisplayRoute(directionsService, directionsDisplay, data[this.getAttribute("value")]);
+                                } else {
+                                    calculateAndDisplayRoutes(directionsService, directionsDisplay, data[this.getAttribute("value")], originArray[1].position);
+                                }
+                                if (infowindow) {
+                                    infowindow.close(); }
+                            });
+                        }
+                    })(marker, i));
+
+                    google.maps.event.addListener(map, 'click', function(event) {
+                        if (infowindow) {
+                            infowindow.close(); }
+                    });
+
+                    markersArray.push(marker);
+                    counter += 1;
+                    if (addresses!==0&&counter>=10){
+                        break;
+                    }
+                }
+
+            }
+        }
+        function deleteOverlays() {
+            if (markersArray) {
+                for (i in markersArray) {
+                    markersArray[i].setMap(null);
+                }
+                markersArray.length = 0;
+            }
+        }
+
+
+
+    }
+
+    function false_data_checker (data_string, pre, end){
+        if(data_string == "False"){
+            return '';
+        }
+        else {
+            return pre+data_string+end;
+        }
+    }
+
+    function create_infowindow_string(data, i, protocol=0) {
+        // console.log(data[i]);
+        var button='Directions';
+        if (protocol!==0){
+            button='Show Route';
+        }
+        return '<div><h3>'+ data[i]["BUSINESSNAME"] +'</h3></div>' +
+            '<div><b>Address: </b>'+ data[i]["ADDRESS"] + ', ' + data[i]["SUBURB"]+ ', '+ data[i]["STATE"]+ ', '+ data[i]["POSTCODE"]+ '</div>' +
+            false_data_checker(data[i]["PHONE"] ,'<div><b>Phone: </b>','</div>')+
+            false_data_checker(data[i]["EMAIL"], '<div><b>Email: </b>','</div>') +
+            false_data_checker(data[i]["WEBSITE"], '<div><b>Website: </b>','</div>') +
+            '<div><button class="directions-button iw-directions-button" id="iw-directions-button" value="'+i.toString()+'">'+
+            button + '</button></div>'+
+            false_data_checker(data[i]["DESCRIPTION"], '<div><br><b>Description: </b>','</div>')+
+            false_data_checker(data[i]["ADDITIONALINFO"], '<div><br><b>Additional info: </b>', '</div>') +
+            '<br>'+
+            '<table class="tg" CELLSPACING="0">\n' +
+            '  <tr class="table-header">\n' +
+            '    <th class="infowindow-cells-0">Waste Type</th>\n' +
+            '    <th class="infowindow-cells">Recycled Here</th>\n' +
+            '  </tr>\n' +
+            '  <tr class="white">\n' +
+            '    <td class="infowindow-cells-0">Batteries</td>\n' +
+            '    <td class="infowindow-cells">'+ Bool_to_Yes(data[i]["Batteries"]) +'</td>\n' +
+            '  </tr>\n' +
+            '  <tr class="grey">\n' +
+            '    <td class="infowindow-cells-0">Computers</td>\n' +
+            '    <td class="infowindow-cells">' + Bool_to_Yes(data[i]["Computers"]) +'</td>\n' +
+            '  </tr>\n' +
+            '  <tr class="white">\n' +
+            '    <td class="infowindow-cells-0">Electricals</td>\n' +
+            '    <td class="infowindow-cells">' + Bool_to_Yes(data[i]["Electricals"]) +'</td>\n' +
+            '  </tr>\n' +
+            '  <tr class="grey">\n' +
+            '    <td class="infowindow-cells-0">light Globes</td>\n' +
+            '    <td class="infowindow-cells">'+ Bool_to_Yes(data[i]["light_Globes"]) +'</td>\n' +
+            '  </tr>\n' +
+            '  <tr class="white">\n' +
+            '    <td class="infowindow-cells-0">Mobile Phones</td>\n' +
+            '    <td class="infowindow-cells">'+ Bool_to_Yes(data[i]["Mobilephones"]) +'</td>\n' +
+            '  </tr>\n' +
+            '  <tr class="grey">\n' +
+            '    <td class="infowindow-cells-0">Printer Cartridges</td>\n' +
+            '    <td class="infowindow-cells">'+ Bool_to_Yes(data[i]["Printer_catridges"]) +'</td>\n' +
+            '  </tr>\n' +
+            '  <tr class="white">\n' +
+            '    <td class="infowindow-cells-0">Televisions</td>\n' +
+            '    <td class="infowindow-cells">'+ Bool_to_Yes(data[i]["Televisions"]) +'</td>\n' +
+            '  </tr>\n' +
+            '</table>';
+    }
+
+    function Bool_to_Yes(bool) {
+        if (bool=="True"){
+            return '<i class="material-icons" style="color: green;">check</i>';
+        }
+        else {
+            return '<i class="material-icons" style="color: red;">close</i>';
+        }
+    }
+
+    //when you press reset filters
+    function reset(protocol) {
+        // initMap();
+
+        $('li input').prop('checked', false);
+        refresh(protocol);
+    }
+
+    function calcDistance(location, loc) {
+        /* location is location of recycle drop-off point
+         * loc is location of address which the user has entered */
+        var R = 6371; // km earth diameter
+        var pi = Math.PI;
+        var lat2 = location.GEO_LAT;
+        var lon2 = location.GEO_LON;
+        var locLat = loc.lat();
+        var locLon = loc.lng();
+        var dLat = (lat2 - locLat) * (pi / 180);
+        var dLon = (lon2 - locLon) * (pi / 180);
+
+        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(locLat * (pi / 180)) * Math.cos(locLat * (pi / 180)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        var d = R * c;
+        var dRound = (Math.round(d * 10)) / 10;
+        if (dRound !== parseFloat(dRound)) {
+            return null;
+        } else {
+            return (Math.round(d * 10)) / 10;
+        }
+    }
+
+
+    function expand() {
+        if ($('.menu').css('display') == 'block') {
+            $('.menu').slideUp();
+            $('#expand_more').text("show");
+        }
+        else {
+            $('.menu').slideDown();
+            $('#expand_more').text("hide");
+        }
+    };
+
+    function expand_slider() {
+        if ($('.slidecontainer').css('display') == 'block') {
+            $('.slidecontainer').slideUp();
+            $('#expand_more_distance').text("show");
+        }
+        else {
+            $('.slidecontainer').slideDown();
+            $('#expand_more_distance').text("hide");
+        }
+    }
+
+    function initiate_loading(){
+        $('.loading').css('display', 'grid');
+        console.log("initiated");
+    }
+
+    function finish_loading(){
+        $('.loading').css('display', 'none');
+        console.log("finished");
+    }
+
+</script>
+<script>
+    function menu() {
+        console.log()
+        if ($('ul.topnav li:nth-child(3)').css('display') == 'none'){
+            $('ul.topnav li:nth-child(n+3)').css("display", "block");
+        }
+        else {
+            console.log("running else");
+            $('ul.topnav li:nth-child(n+3)').css("display", "none");
+        }
+    }
+
+    function change_search_type(num) {
+        $('.selected').removeClass('selected');
+        if(num===0){
+            $('.on_the_way').addClass('selected');
+            $('#search-bar-0, #description0').css('display', 'none');
+            $('#search-bar-1, #search-bar-2').css('display', 'grid');
+            $('#description1, #description2').css('display', 'block');
+            $('#button_set_0').css('display', 'none');
+            $('#button_set_1').css('display', 'block');
+            $('#slider_bar, .slidecontainer').css('display', 'none');
+        } else {
+            $('.near').addClass('selected');
+            $('#search-bar-0').css('display', 'grid');
+            $('#description0').css('display', 'block');
+            $('#search-bar-1, #search-bar-2').css('display', 'none');
+            $('#description1, #description2').css('display', 'none');
+            $('#button_set_0').css('display', 'block');
+            $('#button_set_1').css('display', 'none');
+            $('#slider_bar, .slidecontainer').css('display', 'block');
+        }
+    }
+
+    $('.bottom-search-button, #search-button').click(function() {
+        $('.menu').slideUp();
+        $('.slidecontainer').slideUp();
+        $('#expand_more').text("show");
+        $('#expand_more_distance').text("show");
+    });
+
+    function hide_show_sidebar(action){
+        if (action===0){
+            $('.navigator').css('display', 'none');
+            $('.map').css('grid-column', '1/3');
+        }else{
+            $('.navigator').css('display', 'flex');
+            $('.map').css('grid-column', '2');
+        }
+    }
+
+    $(window).resize(function(){
+        //console.log($(window).width());
+        if ($(window).width()>800){
+            $('ul.topnav li:nth-child(n+2)').css("display", "block");
+            $('.close').css('display', 'none');
+        }else{
+            $('ul.topnav li:nth-child(n+2)').css("display", "none");
+            $('.close').css('display', 'block');
+        }
+    });
+
+</script>
+<script>
+    /* Range slider javascript*/
+    $(function() {
+        const cssClasses = [
+            'rangeslider--is-lowest-value',
+            'rangeslider--is-highest-value'
+        ];
+
+        $('input[type=range]')
+            .rangeslider({
+                polyfill: false,
+
+                onInit: function() {
+                    $(".rangeslider__current_value").html(this.value.toString() + ' km');
+                },
+
+                onSlideEnd: function(position, value) {
+                    console.log(position, value);
+                    refresh(0);
+                }
+            })
+            .on('input', function() {
+                const fraction = (this.value - this.min) / (this.max - this.min);
+                console.log(this.value);
+                $(".rangeslider__current_value").html(this.value.toString()+' km');
+                if (fraction === 0) {
+                    this.nextSibling.classList.add(cssClasses[0]);
+                } else if (fraction === 1) {
+                    this.nextSibling.classList.add(cssClasses[1]);
+                } else {
+                    this.nextSibling.classList.remove(...cssClasses)
+                }
+            });
+    });
+
+
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCxm0AcWVkBRFAQa3bb2cPY3rRCO_qKWR8&libraries=places&callback=initMap"
+        async defer>
+</script>
+
+</html>
